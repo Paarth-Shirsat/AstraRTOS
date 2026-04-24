@@ -11,13 +11,13 @@
 
 void rcc_enable_gpio(uint8_t port){
     if(port <= 8){
-        RCC_AHB1ENR |= (1 << port);
+        RCC_AHB1ENR |= (1 << port); //Enables particular GPIO family
     }
 }
 
 void rcc_disable_gpio(uint8_t port){
     if(port <= 8){
-        RCC_AHB1ENR &= ~(1 << port);
+        RCC_AHB1ENR &= ~(1 << port); //Disables particular GPIO family
     }
 }
 

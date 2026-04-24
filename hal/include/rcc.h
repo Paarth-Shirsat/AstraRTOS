@@ -19,5 +19,7 @@
 
 void rcc_enable_gpio(uint8_t port);
 void rcc_disable_gpio(uint8_t port);
+void rcc_enable_uart(uint8_t uart);
+void rcc_disable_uart(uint8_t uart);
 
 #endif

@@ -16,6 +16,6 @@ void uart_init(void);
 void uart_send_char(char c);
 void uart_send_string(char *str);
 int uart_receive_char(void);
-void uart_receieve_string(char *buffer, int max_length);
+void uart_receive_string(char *buffer, int max_length);
 
 #endif
