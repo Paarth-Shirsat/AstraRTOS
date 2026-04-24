@@ -10,5 +10,41 @@
 #define RCC_CSR (*(volatile uint32_t*)(RCC_BASE + 0x74))    //Reset Flags and LSI Enable
 
 void rcc_enable_gpio(uint8_t port){
-    RCC_AHB1ENR |= (1 << port);
+    if(port <= 8){
+        RCC_AHB1ENR |= (1 << port);
+    }
+}
+
+void rcc_disable_gpio(uint8_t port){
+    if(port <= 8){
+        RCC_AHB1ENR &= ~(1 << port);
+    }
+}
+
+void rcc_enable_uart(uint8_t uart){
+    switch(uart){
+        case USART1_EN:
+            RCC_APB2ENR |= (1 << 4);
+            break;
+        case USART2_EN:
+            RCC_APB1ENR |= (1 << 17);
+            break;
+        case USART3_EN:
+            RCC_APB1ENR |= (1 << 18);
+            break;
+    }
+}
+
+void rcc_disable_uart(uint8_t uart){
+    switch(uart){
+        case USART1_EN:
+            RCC_APB2ENR &= ~(1 << 4);
+            break;
+        case USART2_EN:
+            RCC_APB1ENR &= ~(1 << 17);
+            break;
+        case USART3_EN:
+            RCC_APB1ENR &= ~(1 << 18);
+            break;
+    }
 }
