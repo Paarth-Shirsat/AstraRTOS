@@ -12,6 +12,8 @@
 #define GPIOG_EN 6
 #define GPIOH_EN 7
 #define GPIOI_EN 8
+#define GPIOJ_EN 9
+#define GPIOK_EN 10
 
 #define USART1_EN 1
 #define USART2_EN 2

@@ -10,13 +10,13 @@
 #define RCC_CSR (*(volatile uint32_t*)(RCC_BASE + 0x74))    //Reset Flags and LSI Enable
 
 void rcc_enable_gpio(uint8_t port){
-    if(port <= 8){
+    if(port <= 10){
         RCC_AHB1ENR |= (1 << port); //Enables particular GPIO family
     }
 }
 
 void rcc_disable_gpio(uint8_t port){
-    if(port <= 8){
+    if(port <= 10){
         RCC_AHB1ENR &= ~(1 << port); //Disables particular GPIO family
     }
 }

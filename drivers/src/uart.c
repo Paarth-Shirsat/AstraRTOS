@@ -13,7 +13,7 @@ void uart_init(void){
     GPIOA_AFRL &= ~((0xF << (2*4)) | (0xF << (3*4))); //Clear 
     GPIOA_AFRL |= ((7 << (2*4)) | (7 << (3*4))); //Selecting AF to USART2
 
-    USART2_BRR = 0x12F; //9600 BaudRate (Condition: Peripheral Clock (APB1) = 45MHz)
+    USART2_BRR = 0x1250; //9600 BaudRate (Condition: Peripheral Clock (APB1) = 45MHz)
 
     //8N1
     USART2_CR1 &= ~(1 << 12);
