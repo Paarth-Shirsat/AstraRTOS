@@ -26,11 +26,15 @@ int os_task_create(void (*task_function)(void), uint32_t priority , uint32_t sta
     *task_stack_ptr = 0xFFFFFFFD;
     task_stack_ptr -= 13;
     task->stack_ptr = task_stack_ptr;
+    task->stack_base = task_stack;
+    task->stack_size = stack_size;
     task->task_num = os_task_count;
     task->state = TASK_READY;
     task->delay_ticks = 0;
     task->priority = priority;
     task->base_priority = priority;
+    task->run_count = 0;
+    task->stack_high_water = 0;
     if(os_task_count == 0){
         os_current_task_ptr = task;
     }
@@ -56,9 +60,9 @@ void os_decrement_blocked_tasks(void){
     }
 }
 void os_schedule_next_task(void){
-    uint32_t best_priority  = -1;
+    uint32_t best_priority = -1;
     int chosen_index = -1;
-    if (os_task_count > 0) {
+    if(os_task_count > 0){
         int next_task = (os_current_task_ptr->task_num + 1) % os_task_count;
         for(uint32_t i = 0; i < os_task_count; i++){
             if(os_tasks[next_task]->state == TASK_READY){
@@ -67,9 +71,17 @@ void os_schedule_next_task(void){
                     chosen_index = next_task;
                 }
             }
-            next_task = (next_task + 1) % os_task_count;    
+            next_task = (next_task + 1) % os_task_count;
         }
         if(chosen_index != -1){
+            os_tasks[chosen_index]->run_count += 1;
+            uint32_t used = (uint32_t)(
+                (uint8_t *)&os_tasks[chosen_index]->stack_base[os_tasks[chosen_index]->stack_size - 1] -
+                (uint8_t *)os_tasks[chosen_index]->stack_ptr
+            );
+            if(used > os_tasks[chosen_index]->stack_high_water){
+                os_tasks[chosen_index]->stack_high_water = used;
+            }
             os_current_task_ptr = os_tasks[chosen_index];
         }
     }
