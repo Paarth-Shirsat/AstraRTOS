@@ -16,12 +16,16 @@ typedef enum {
 
 typedef struct {
     uint32_t *stack_ptr;
+    uint32_t *stack_base;
+    uint32_t stack_size;
     int task_num;
     os_task_state state;
     uint32_t delay_ticks;
     void *waiting_for_resource;
     uint32_t priority;
     uint32_t base_priority;
+    uint32_t run_count;
+    uint32_t stack_high_water;
 }os_tcb_t;
 
 extern os_tcb_t *os_tasks[];
