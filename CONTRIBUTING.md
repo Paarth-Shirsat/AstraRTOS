@@ -44,6 +44,24 @@ When contributing create properly named branch to be merged
 
 - Feature branches - `<area>/<feature>`, e.g. `drivers/gpio-driver`
 
+## Code Format
+
+AstraRTOS uses clang-format to ensure a consistent coding style.
+The CI pipeline will automatically reject pull requests that do not match the formatting rules defined in the `.clang-format` file.
+
+On Ubuntu/Debian, install clang-format with:
+```
+sudo apt install clang-format
+```
+You can apply the formatting directly to your modified files by running:
+```
+clang-format -i -style=file <modified_file.c>
+```
+To check without modifying:
+```
+clang-format --dry-run --Werror -style=file <modified_file.c>
+```
+
 ## Build and Test
 
 Before pushing, make sure your code compiles:
