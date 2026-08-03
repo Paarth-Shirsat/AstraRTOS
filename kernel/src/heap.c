@@ -2,6 +2,7 @@
 #include "mutex.h"
 
 #define SIZE_RAM 100 * 1024
+#define ALIGN(x, a) (((x) + ((a) - 1)) & ~((uint32_t)(a) - 1))
 
 static uint8_t os_heap[SIZE_RAM];
 static heap_block_t *heap_head = 0;
@@ -18,16 +19,17 @@ void os_heap_init() {
 void *os_malloc(uint32_t size) {
     os_mutex_take(&mutex_heap);
     heap_block_t *current = heap_head;
+    uint32_t aligned_size = ALIGN(size, 8);
     while(current != 0) {
-        if(current->is_free == 1 && current->size >= size) {
-            if(current->size >= size + sizeof(heap_block_t) + 1) {
+        if(current->is_free == 1 && current->size >= aligned_size) {
+            if(current->size >= aligned_size + sizeof(heap_block_t) + 1) {
                 heap_block_t *new = current;
-                new = (heap_block_t *)((uint8_t *)current + sizeof(heap_block_t) + size);
+                new = (heap_block_t *)((uint8_t *)current + sizeof(heap_block_t) + aligned_size);
                 new->is_free = 1;
-                new->size = current->size - size - sizeof(heap_block_t);
+                new->size = current->size - aligned_size - sizeof(heap_block_t);
                 new->next = current->next;
                 current->is_free = 0;
-                current->size = size;
+                current->size = aligned_size;
                 current->next = new;
             }
             else {
