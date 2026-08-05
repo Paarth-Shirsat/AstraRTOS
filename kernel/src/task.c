@@ -1,5 +1,6 @@
 #include "task.h"
 #include "heap.h"
+#include "../port/system_init.h"
 #define SHPR3 (*(volatile uint8_t *)0xE000ED22) /*sets PendSV priority*/
 #define ICSR (*((volatile uint32_t *)0xE000ED04))
 os_tcb_t *os_tasks[OS_MAX_TASKS_NUM];
@@ -99,6 +100,7 @@ static void os_idle_task(void) {
 void os_start(void) {
     os_task_create(os_idle_task, 0, 64); // default to sleep
     SHPR3 = 255;                         /*sets PendSV to lowest priority*/
+    systick_init();                      // enables systick
     __asm volatile("svc 0");             /*triggers SVC*/
 }
 
