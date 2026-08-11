@@ -1,10 +1,11 @@
 #include "heap.h"
 #include "mutex.h"
+#include "mpu.h"
 
 #define SIZE_RAM 100 * 1024
 #define ALIGN(x, a) (((x) + ((a) - 1)) & ~((uint32_t)(a) - 1))
 
-static uint8_t os_heap[SIZE_RAM];
+static uint8_t os_heap[SIZE_RAM] __attribute__((aligned(32)));
 static heap_block_t *heap_head = 0;
 os_mutex_t mutex_heap;
 
@@ -19,7 +20,13 @@ void os_heap_init() {
 void *os_malloc(uint32_t size) {
     os_mutex_take(&mutex_heap);
     heap_block_t *current = heap_head;
-    uint32_t aligned_size = ALIGN(size, 8);
+    uint32_t aligned_size;
+    if(mpu_status == 0) {
+        aligned_size = ALIGN(size, 8);
+    }
+    else {
+        aligned_size = ALIGN(size, 32);
+    }
     while(current != 0) {
         if(current->is_free == 1 && current->size >= aligned_size) {
             if(current->size >= aligned_size + sizeof(heap_block_t) + 1) {

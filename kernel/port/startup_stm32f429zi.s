@@ -127,7 +127,16 @@ PendSV_Handler:
     str r0, [r2]
     push {r14}
     bl os_schedule_next_task
+    ldr r1, =mpu_status
+    ldr r2, [r1]
+    ldr r1, =os_current_task_ptr
+    ldr r0, [r1]
+    cmp r2, #1
+    it eq
+    bleq apply_guard_region
     pop {r14}
+    dsb
+    isb
     ldr r1, =os_current_task_ptr
     ldr r2, [r1]
     ldr r0, [r2]

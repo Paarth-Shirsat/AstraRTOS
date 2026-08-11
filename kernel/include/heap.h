@@ -7,7 +7,7 @@ typedef struct heap_block {
     uint32_t size;
     uint8_t is_free;
     struct heap_block *next;
-} heap_block_t;
+} __attribute__((aligned(32))) heap_block_t;
 
 void os_heap_init();
 void *os_malloc(uint32_t size);
