@@ -1,4 +1,5 @@
 #include "rcc.h"
+#include "system_init.h"
 
 #define RCC_BASE 0x40023800
 
@@ -46,5 +47,25 @@ void rcc_disable_uart(uint8_t uart) {
     case USART3_EN:
         RCC_APB1ENR &= ~(1 << 18);
         break;
+    }
+}
+
+uint32_t rcc_get_apb1_freq(void) {
+    uint32_t ppre1 = (RCC_CFGR >> 10) & 0x07;
+    if(ppre1 < 4) {
+        return HCLK_FREQ;
+    }
+    else {
+        return HCLK_FREQ >> (ppre1 - 3);
+    }
+}
+
+uint32_t rcc_get_apb2_freq(void) {
+    uint32_t ppre2 = (RCC_CFGR >> 13) & 0x07;
+    if(ppre2 < 4) {
+        return HCLK_FREQ;
+    }
+    else {
+        return HCLK_FREQ >> (ppre2 - 3);
     }
 }
